@@ -10,6 +10,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import br.com.alura.client.ClientHttpConfiguration;
+import br.com.alura.domain.Shelter;
 
 public class ShelterService {
 
@@ -39,19 +40,16 @@ public class ShelterService {
 		System.out.println("Digite o nome do abrigo:");
 		Scanner scanner = new Scanner(System.in);
 
-		String nome = scanner.nextLine();
+		String name = scanner.nextLine();
 		System.out.println("Digite o telefone do abrigo:");
-		String telefone = scanner.nextLine();
+		String phone = scanner.nextLine();
 		System.out.println("Digite o email do abrigo:");
 		String email = scanner.nextLine();
 
-		JsonObject json = new JsonObject();
-		json.addProperty("nome", nome);
-		json.addProperty("telefone", telefone);
-		json.addProperty("email", email);
+		Shelter shelter = new Shelter(name, phone, email);
 
 		String uri = "http://localhost:8080/abrigos";
-		HttpResponse<String> response = clientHttp.triggerPostRequest(uri, json);
+		HttpResponse<String> response = clientHttp.triggerPostRequest(uri, shelter);
 
 		int statusCode = response.statusCode();
 		String responseBody = response.body();
