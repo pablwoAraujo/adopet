@@ -1,10 +1,5 @@
 package br.com.alura;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -14,12 +9,18 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Scanner;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 public class AdopetConsoleApplication {
 
 	public static void main(String[] args) {
 		System.out.println("##### BOAS VINDAS AO SISTEMA ADOPET CONSOLE #####");
 		try {
 			int opcaoEscolhida = 0;
+			Scanner scanner = new Scanner(System.in);
 			while (opcaoEscolhida != 5) {
 				System.out.println("\nDIGITE O NÚMERO DA OPERAÇÃO DESEJADA:");
 				System.out.println("1 -> Listar abrigos cadastrados");
@@ -28,7 +29,7 @@ public class AdopetConsoleApplication {
 				System.out.println("4 -> Importar pets do abrigo");
 				System.out.println("5 -> Sair");
 
-				String textoDigitado = new Scanner(System.in).nextLine();
+				String textoDigitado = scanner.nextLine();
 				opcaoEscolhida = Integer.parseInt(textoDigitado);
 
 				if (opcaoEscolhida == 1) {
@@ -46,6 +47,7 @@ public class AdopetConsoleApplication {
 					opcaoEscolhida = 0;
 				}
 			}
+			scanner.close();
 			System.out.println("Finalizando o programa...");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -55,10 +57,10 @@ public class AdopetConsoleApplication {
 	public static void listShelters() throws IOException, InterruptedException {
 		HttpClient client = HttpClient.newHttpClient();
 		String uri = "http://localhost:8080/abrigos";
-		HttpRequest request = HttpRequest.newBuilder().uri(URI.create(uri))
-				.method("GET", HttpRequest.BodyPublishers.noBody()).build();
-		HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+		HttpResponse<String> response = triggerGetRequest(client, uri);
 		String responseBody = response.body();
+
 		JsonArray jsonArray = JsonParser.parseString(responseBody).getAsJsonArray();
 		System.out.println("Abrigos cadastrados:");
 		for (JsonElement element : jsonArray) {
@@ -86,10 +88,8 @@ public class AdopetConsoleApplication {
 
 		HttpClient client = HttpClient.newHttpClient();
 		String uri = "http://localhost:8080/abrigos";
-		HttpRequest request = HttpRequest.newBuilder().uri(URI.create(uri)).header("Content-Type", "application/json")
-				.method("POST", HttpRequest.BodyPublishers.ofString(json.toString())).build();
+		HttpResponse<String> response = triggerPostRequest(client, uri, json);
 
-		HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 		int statusCode = response.statusCode();
 		String responseBody = response.body();
 		if (statusCode == 200) {
@@ -113,9 +113,8 @@ public class AdopetConsoleApplication {
 
 		HttpClient client = HttpClient.newHttpClient();
 		String uri = "http://localhost:8080/abrigos/" + idOuNome + "/pets";
-		HttpRequest request = HttpRequest.newBuilder().uri(URI.create(uri))
-				.method("GET", HttpRequest.BodyPublishers.noBody()).build();
-		HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+		HttpResponse<String> response = triggerGetRequest(client, uri);
+
 		int statusCode = response.statusCode();
 		if (statusCode == 404 || statusCode == 500) {
 			System.out.println("ID ou nome não cadastrado!");
@@ -172,11 +171,8 @@ public class AdopetConsoleApplication {
 
 			HttpClient client = HttpClient.newHttpClient();
 			String uri = "http://localhost:8080/abrigos/" + idOuNome + "/pets";
-			HttpRequest request = HttpRequest.newBuilder().uri(URI.create(uri))
-					.header("Content-Type", "application/json")
-					.method("POST", HttpRequest.BodyPublishers.ofString(json.toString())).build();
+			HttpResponse<String> response = triggerPostRequest(client, uri, json);
 
-			HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 			int statusCode = response.statusCode();
 			String responseBody = response.body();
 			if (statusCode == 200) {
@@ -191,5 +187,21 @@ public class AdopetConsoleApplication {
 			}
 		}
 		reader.close();
+	}
+
+	public static HttpResponse<String> triggerGetRequest(HttpClient client, String uri)
+			throws IOException, InterruptedException {
+		HttpRequest request = HttpRequest.newBuilder().uri(URI.create(uri))
+				.method("GET", HttpRequest.BodyPublishers.noBody()).build();
+
+		return client.send(request, HttpResponse.BodyHandlers.ofString());
+	}
+
+	public static HttpResponse<String> triggerPostRequest(HttpClient client, String uri, JsonObject json)
+			throws IOException, InterruptedException {
+		HttpRequest request = HttpRequest.newBuilder().uri(URI.create(uri)).header("Content-Type", "application/json")
+				.method("POST", HttpRequest.BodyPublishers.ofString(json.toString())).build();
+
+		return client.send(request, HttpResponse.BodyHandlers.ofString());
 	}
 }
