@@ -9,10 +9,7 @@ import br.com.alura.service.ShelterService;
 public class AdopetConsoleApplication {
 
 	public static void main(String[] args) {
-		ClientHttpConfiguration clientHttp = new ClientHttpConfiguration();
-
-		PetService petService = new PetService(clientHttp);
-		ShelterService shelterService = new ShelterService(clientHttp);
+		CommandExecutor executor = new CommandExecutor();
 
 		System.out.println("##### BOAS VINDAS AO SISTEMA ADOPET CONSOLE #####");
 		try {
@@ -29,13 +26,13 @@ public class AdopetConsoleApplication {
 				opcaoEscolhida = Integer.parseInt(textoDigitado);
 
 				if (opcaoEscolhida == 1) {
-					shelterService.listShelters();
+					executor.executeCommand(new ListShelterCommand());
 				} else if (opcaoEscolhida == 2) {
-					shelterService.registerShelters();
+					executor.executeCommand(new RegisterSheltersCommand());
 				} else if (opcaoEscolhida == 3) {
-					petService.listShelterPets();
+					executor.executeCommand(new ListShelterPetsCommand());
 				} else if (opcaoEscolhida == 4) {
-					petService.importPetsToTheShelter();
+					executor.executeCommand(new ImportPetsToTheShelterCommand());
 				} else if (opcaoEscolhida == 5) {
 					break;
 				} else {
