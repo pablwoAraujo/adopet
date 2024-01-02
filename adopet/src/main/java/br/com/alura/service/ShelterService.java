@@ -28,11 +28,15 @@ public class ShelterService {
 		Shelter[] shelters = new ObjectMapper().readValue(responseBody, Shelter[].class);
 		// List<Shelter> shelterList = Arrays.stream(shelters).toList();
 
-		System.out.println("Abrigos cadastrados:");
-		for (Shelter shelter : shelters) {
-			long id = shelter.getId();
-			String name = shelter.getNome();
-			System.out.println(id + " - " + name);
+		if (shelters.length == 0) {
+			System.out.println("Não há abrigos cadastrados");
+		} else {
+			System.out.println("Abrigos cadastrados:");
+			for (Shelter shelter : shelters) {
+				long id = shelter.getId();
+				String name = shelter.getNome();
+				System.out.println(id + " - " + name);
+			}
 		}
 	}
 

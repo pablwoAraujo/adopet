@@ -43,4 +43,24 @@ public class ShelterServiceTest {
 		Assertions.assertEquals(expectedAbrigosCadastrados, actualAbrigosCadastrados);
 		Assertions.assertEquals(expectedIdENome, actualIdENome);
 	}
+
+	@Test
+	public void shouldCheckWhenThereIsNoShelter() throws IOException, InterruptedException {
+		abrigo.setId(0L);
+		String expected = "Não há abrigos cadastrados";
+
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		PrintStream printStream = new PrintStream(baos);
+		System.setOut(printStream);
+
+		when(response.body()).thenReturn("[]");
+		when(client.triggerGetRequest(anyString())).thenReturn(response);
+
+		abrigoService.listShelters();
+
+		String[] lines = baos.toString().split(System.lineSeparator());
+		String actual = lines[0];
+
+		Assertions.assertEquals(expected, actual);
+	}
 }
