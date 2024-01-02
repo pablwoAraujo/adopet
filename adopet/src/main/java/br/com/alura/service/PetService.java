@@ -6,10 +6,7 @@ import java.io.IOException;
 import java.net.http.HttpResponse;
 import java.util.Scanner;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.alura.client.ClientHttpConfiguration;
 import br.com.alura.domain.Pet;
@@ -23,12 +20,8 @@ public class PetService {
 	}
 
 	public void listShelterPets() throws IOException, InterruptedException {
-		Scanner scanner = new Scanner(System.in);
-
 		System.out.println("Digite o id ou nome do abrigo:");
-		String idOuNome = scanner.nextLine();
-
-		scanner.close();
+		String idOuNome = new Scanner(System.in).nextLine();
 
 		String uri = "http://localhost:8080/abrigos/" + idOuNome + "/pets";
 		HttpResponse<String> response = clientHttp.triggerGetRequest(uri);
@@ -39,29 +32,28 @@ public class PetService {
 			return;
 		}
 		String responseBody = response.body();
-		JsonArray jsonArray = JsonParser.parseString(responseBody).getAsJsonArray();
+
+		Pet[] pets = new ObjectMapper().readValue(responseBody, Pet[].class);
+		// List<Pet> petList = Arrays.stream(pets).toList();
+
 		System.out.println("Pets cadastrados:");
-		for (JsonElement element : jsonArray) {
-			JsonObject jsonObject = element.getAsJsonObject();
-			long id = jsonObject.get("id").getAsLong();
-			String tipo = jsonObject.get("tipo").getAsString();
-			String nome = jsonObject.get("nome").getAsString();
-			String raca = jsonObject.get("raca").getAsString();
-			int idade = jsonObject.get("idade").getAsInt();
-			System.out.println(id + " - " + tipo + " - " + nome + " - " + raca + " - " + idade + " ano(s)");
+		for (Pet pet : pets) {
+			long id = pet.getId();
+			String kind = pet.getTipo();
+			String name = pet.getNome();
+			String breed = pet.getRaca();
+			int age = pet.getIdade();
+			System.out.println(id + " - " + kind + " - " + name + " - " + breed + " - " + age + " ano(s)");
 		}
 	}
 
 	public void importPetsToTheShelter() throws NumberFormatException, IOException, InterruptedException {
-		Scanner scanner = new Scanner(System.in);
-
 		System.out.println("Digite o id ou nome do abrigo:");
-		String idOuNome = scanner.nextLine();
+		String idOuNome = new Scanner(System.in).nextLine();
 
 		System.out.println("Digite o nome do arquivo CSV:");
-		String nomeArquivo = scanner.nextLine();
+		String nomeArquivo = new Scanner(System.in).nextLine();
 
-		scanner.close();
 		BufferedReader reader;
 		try {
 			reader = new BufferedReader(new FileReader(nomeArquivo));
@@ -80,7 +72,7 @@ public class PetService {
 			String color = campos[4];
 			Float weight = Float.parseFloat(campos[5]);
 
-			Pet pet = new Pet(kind, name, breed, age, color, weight);
+			Pet pet = new Pet(kind.toUpperCase(), name, breed, age, color, weight);
 
 			String uri = "http://localhost:8080/abrigos/" + idOuNome + "/pets";
 			HttpResponse<String> response = clientHttp.triggerPostRequest(uri, pet);

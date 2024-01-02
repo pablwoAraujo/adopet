@@ -17,7 +17,6 @@ public class AdopetConsoleApplication {
 		System.out.println("##### BOAS VINDAS AO SISTEMA ADOPET CONSOLE #####");
 		try {
 			int opcaoEscolhida = 0;
-			Scanner scanner = new Scanner(System.in);
 			while (opcaoEscolhida != 5) {
 				System.out.println("\nDIGITE O NÚMERO DA OPERAÇÃO DESEJADA:");
 				System.out.println("1 -> Listar abrigos cadastrados");
@@ -26,7 +25,7 @@ public class AdopetConsoleApplication {
 				System.out.println("4 -> Importar pets do abrigo");
 				System.out.println("5 -> Sair");
 
-				String textoDigitado = scanner.nextLine();
+				String textoDigitado = new Scanner(System.in).nextLine();
 				opcaoEscolhida = Integer.parseInt(textoDigitado);
 
 				if (opcaoEscolhida == 1) {
@@ -44,7 +43,6 @@ public class AdopetConsoleApplication {
 					opcaoEscolhida = 0;
 				}
 			}
-			scanner.close();
 			System.out.println("Finalizando o programa...");
 		} catch (Exception e) {
 			e.printStackTrace();

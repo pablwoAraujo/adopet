@@ -2,12 +2,11 @@ package br.com.alura.service;
 
 import java.io.IOException;
 import java.net.http.HttpResponse;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.alura.client.ClientHttpConfiguration;
 import br.com.alura.domain.Shelter;
@@ -26,25 +25,26 @@ public class ShelterService {
 		HttpResponse<String> response = clientHttp.triggerGetRequest(uri);
 		String responseBody = response.body();
 
-		JsonArray jsonArray = JsonParser.parseString(responseBody).getAsJsonArray();
+		Shelter[] shelters = new ObjectMapper().readValue(responseBody, Shelter[].class);
+		// List<Shelter> shelterList = Arrays.stream(shelters).toList();
+
 		System.out.println("Abrigos cadastrados:");
-		for (JsonElement element : jsonArray) {
-			JsonObject jsonObject = element.getAsJsonObject();
-			long id = jsonObject.get("id").getAsLong();
-			String nome = jsonObject.get("nome").getAsString();
-			System.out.println(id + " - " + nome);
+		for (Shelter shelter : shelters) {
+			long id = shelter.getId();
+			String name = shelter.getNome();
+			System.out.println(id + " - " + name);
 		}
 	}
 
 	public void registerShelters() throws IOException, InterruptedException {
 		System.out.println("Digite o nome do abrigo:");
-		Scanner scanner = new Scanner(System.in);
+		// Scanner scanner = new Scanner(System.in);
 
-		String name = scanner.nextLine();
+		String name = new Scanner(System.in).nextLine();
 		System.out.println("Digite o telefone do abrigo:");
-		String phone = scanner.nextLine();
+		String phone = new Scanner(System.in).nextLine();
 		System.out.println("Digite o email do abrigo:");
-		String email = scanner.nextLine();
+		String email = new Scanner(System.in).nextLine();
 
 		Shelter shelter = new Shelter(name, phone, email);
 
@@ -61,6 +61,6 @@ public class ShelterService {
 			System.out.println(responseBody);
 		}
 
-		scanner.close();
+		// scanner.close();
 	}
 }
