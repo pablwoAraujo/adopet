@@ -19,13 +19,13 @@ import jakarta.validation.ValidationException;
 public class AdocaoController {
 
 	@Autowired
-	private AdocaoService adocaoServiec;
+	private AdocaoService adocaoService;
 
 	@PostMapping
 	@Transactional
 	public ResponseEntity<String> solicitar(@RequestBody @Valid Adocao adocao) {
 		try {
-			this.adocaoServiec.solicitar(adocao);
+			this.adocaoService.solicitar(adocao);
 			return ResponseEntity.ok("Adoção solicitada com sucesso!");
 		} catch (ValidationException e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
@@ -38,7 +38,7 @@ public class AdocaoController {
 	@Transactional
 	public ResponseEntity<String> aprovar(@RequestBody @Valid Adocao adocao) {
 		try {
-			this.aprovar(adocao);
+			this.adocaoService.aprovar(adocao);
 			return ResponseEntity.ok("Adoção aprovada com sucesso!");
 		} catch (Exception e) {
 			return ResponseEntity.internalServerError().build();
@@ -49,7 +49,7 @@ public class AdocaoController {
 	@Transactional
 	public ResponseEntity<String> reprovar(@RequestBody @Valid Adocao adocao) {
 		try {
-			this.reprovar(adocao);
+			this.adocaoService.reprovar(adocao);
 			return ResponseEntity.ok("Adoção reprovada com sucesso!");
 		} catch (Exception e) {
 			return ResponseEntity.internalServerError().build();
