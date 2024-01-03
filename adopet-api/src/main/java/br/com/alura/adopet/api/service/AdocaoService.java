@@ -7,10 +7,17 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.com.alura.adopet.api.dto.AprovacaoAdocaoDto;
+import br.com.alura.adopet.api.dto.ReprovacaoAdocaoDto;
+import br.com.alura.adopet.api.dto.SolicitacaoDeAdocaoDto;
 import br.com.alura.adopet.api.exception.ValidacaoException;
 import br.com.alura.adopet.api.model.Adocao;
+import br.com.alura.adopet.api.model.Pet;
 import br.com.alura.adopet.api.model.StatusAdocao;
+import br.com.alura.adopet.api.model.Tutor;
 import br.com.alura.adopet.api.repository.AdocaoRepository;
+import br.com.alura.adopet.api.repository.PetRepository;
+import br.com.alura.adopet.api.repository.TutorRepository;
 
 @Service
 public class AdocaoService {
@@ -21,24 +28,33 @@ public class AdocaoService {
 	@Autowired
 	private EmailService emailService;
 
-	public void solicitar(Adocao adocao) {
-		if (adocao.getPet().getAdotado() == true) {
+	@Autowired
+	private PetRepository petRepository;
+
+	@Autowired
+	private TutorRepository tutorRepository;
+
+	public void solicitar(SolicitacaoDeAdocaoDto solicitacao) {
+		Pet pet = petRepository.getReferenceById(solicitacao.idPet());
+		Tutor tutor = tutorRepository.getReferenceById(solicitacao.idTutor());
+
+		if (pet.getAdotado() == true) {
 			throw new ValidacaoException("Pet já foi adotado!");
 		} else {
 			List<Adocao> adocoes = repository.findAll();
 			for (Adocao a : adocoes) {
-				if (a.getTutor() == adocao.getTutor() && a.getStatus() == StatusAdocao.AGUARDANDO_AVALIACAO) {
+				if (a.getTutor() == tutor && a.getStatus() == StatusAdocao.AGUARDANDO_AVALIACAO) {
 					throw new ValidacaoException("Tutor já possui outra adoção aguardando avaliação!");
 				}
 			}
 			for (Adocao a : adocoes) {
-				if (a.getPet() == adocao.getPet() && a.getStatus() == StatusAdocao.AGUARDANDO_AVALIACAO) {
+				if (a.getPet() == pet && a.getStatus() == StatusAdocao.AGUARDANDO_AVALIACAO) {
 					throw new ValidacaoException("Pet já está aguardando avaliação para ser adotado!");
 				}
 			}
 			for (Adocao a : adocoes) {
 				int contador = 0;
-				if (a.getTutor() == adocao.getTutor() && a.getStatus() == StatusAdocao.APROVADO) {
+				if (a.getTutor() == tutor && a.getStatus() == StatusAdocao.APROVADO) {
 					contador = contador + 1;
 				}
 				if (contador == 5) {
@@ -46,6 +62,10 @@ public class AdocaoService {
 				}
 			}
 		}
+		Adocao adocao = new Adocao();
+		adocao.setPet(pet);
+		adocao.setTutor(tutor);
+		adocao.setMotivo(solicitacao.motivo());
 		adocao.setData(LocalDateTime.now());
 		adocao.setStatus(StatusAdocao.AGUARDANDO_AVALIACAO);
 		repository.save(adocao);
@@ -59,9 +79,9 @@ public class AdocaoService {
 		emailService.sendEmail(recipient, subject, message);
 	}
 
-	public void aprovar(Adocao adocao) {
+	public void aprovar(AprovacaoAdocaoDto aprovacao) {
+		Adocao adocao = repository.getReferenceById(aprovacao.idAdocao());
 		adocao.setStatus(StatusAdocao.APROVADO);
-		repository.save(adocao);
 
 		String subject = "Adoção aprovada";
 		String recipient = adocao.getPet().getAbrigo().getEmail();
@@ -74,9 +94,10 @@ public class AdocaoService {
 		emailService.sendEmail(recipient, subject, message);
 	}
 
-	public void reprovar(Adocao adocao) {
+	public void reprovar(ReprovacaoAdocaoDto reprovacao) {
+		Adocao adocao = repository.getReferenceById(reprovacao.idAdocao());
 		adocao.setStatus(StatusAdocao.REPROVADO);
-		repository.save(adocao);
+		adocao.setJustificativaStatus(reprovacao.justificativa());
 
 		String subject = "Adoção reprovada";
 		String recipient = adocao.getPet().getAbrigo().getEmail();

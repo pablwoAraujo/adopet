@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.alura.adopet.api.model.Adocao;
+import br.com.alura.adopet.api.dto.AprovacaoAdocaoDto;
+import br.com.alura.adopet.api.dto.ReprovacaoAdocaoDto;
+import br.com.alura.adopet.api.dto.SolicitacaoDeAdocaoDto;
 import br.com.alura.adopet.api.service.AdocaoService;
 import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
@@ -23,9 +25,9 @@ public class AdocaoController {
 
 	@PostMapping
 	@Transactional
-	public ResponseEntity<String> solicitar(@RequestBody @Valid Adocao adocao) {
+	public ResponseEntity<String> solicitar(@RequestBody @Valid SolicitacaoDeAdocaoDto solicitacao) {
 		try {
-			this.adocaoService.solicitar(adocao);
+			this.adocaoService.solicitar(solicitacao);
 			return ResponseEntity.ok("Adoção solicitada com sucesso!");
 		} catch (ValidationException e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
@@ -36,9 +38,9 @@ public class AdocaoController {
 
 	@PutMapping("/aprovar")
 	@Transactional
-	public ResponseEntity<String> aprovar(@RequestBody @Valid Adocao adocao) {
+	public ResponseEntity<String> aprovar(@RequestBody @Valid AprovacaoAdocaoDto aprovacao) {
 		try {
-			this.adocaoService.aprovar(adocao);
+			this.adocaoService.aprovar(aprovacao);
 			return ResponseEntity.ok("Adoção aprovada com sucesso!");
 		} catch (Exception e) {
 			return ResponseEntity.internalServerError().build();
@@ -47,9 +49,9 @@ public class AdocaoController {
 
 	@PutMapping("/reprovar")
 	@Transactional
-	public ResponseEntity<String> reprovar(@RequestBody @Valid Adocao adocao) {
+	public ResponseEntity<String> reprovar(@RequestBody @Valid ReprovacaoAdocaoDto reprovacao) {
 		try {
-			this.adocaoService.reprovar(adocao);
+			this.adocaoService.reprovar(reprovacao);
 			return ResponseEntity.ok("Adoção reprovada com sucesso!");
 		} catch (Exception e) {
 			return ResponseEntity.internalServerError().build();
