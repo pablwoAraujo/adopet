@@ -1,6 +1,5 @@
 package br.com.alura.adopet.api.service;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -12,7 +11,6 @@ import br.com.alura.adopet.api.dto.ReprovacaoAdocaoDto;
 import br.com.alura.adopet.api.dto.SolicitacaoDeAdocaoDto;
 import br.com.alura.adopet.api.model.Adocao;
 import br.com.alura.adopet.api.model.Pet;
-import br.com.alura.adopet.api.model.StatusAdocao;
 import br.com.alura.adopet.api.model.Tutor;
 import br.com.alura.adopet.api.repository.AdocaoRepository;
 import br.com.alura.adopet.api.repository.PetRepository;
@@ -43,12 +41,7 @@ public class AdocaoService {
 
 		solicitaoDeAdocaoValidation.forEach(v -> v.validate(solicitacao));
 
-		Adocao adocao = new Adocao();
-		adocao.setPet(pet);
-		adocao.setTutor(tutor);
-		adocao.setMotivo(solicitacao.motivo());
-		adocao.setData(LocalDateTime.now());
-		adocao.setStatus(StatusAdocao.AGUARDANDO_AVALIACAO);
+		Adocao adocao = new Adocao(tutor, pet, solicitacao.motivo());
 		repository.save(adocao);
 
 		String subject = "Solicitação de adoção";
@@ -62,7 +55,7 @@ public class AdocaoService {
 
 	public void aprovar(AprovacaoAdocaoDto aprovacao) {
 		Adocao adocao = repository.getReferenceById(aprovacao.idAdocao());
-		adocao.setStatus(StatusAdocao.APROVADO);
+		adocao.aprovaAdocao();
 
 		String subject = "Adoção aprovada";
 		String recipient = adocao.getPet().getAbrigo().getEmail();
@@ -77,8 +70,7 @@ public class AdocaoService {
 
 	public void reprovar(ReprovacaoAdocaoDto reprovacao) {
 		Adocao adocao = repository.getReferenceById(reprovacao.idAdocao());
-		adocao.setStatus(StatusAdocao.REPROVADO);
-		adocao.setJustificativaStatus(reprovacao.justificativa());
+		adocao.reprovaAdocao(reprovacao.justificativa());
 
 		String subject = "Adoção reprovada";
 		String recipient = adocao.getPet().getAbrigo().getEmail();

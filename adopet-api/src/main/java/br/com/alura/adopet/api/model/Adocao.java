@@ -18,91 +18,85 @@ import jakarta.persistence.Table;
 @Table(name = "adocoes")
 public class Adocao {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    private LocalDateTime data;
+	private LocalDateTime data;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Tutor tutor;
+	@ManyToOne(fetch = FetchType.LAZY)
+	private Tutor tutor;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    private Pet pet;
+	@OneToOne(fetch = FetchType.LAZY)
+	private Pet pet;
 
-    private String motivo;
+	private String motivo;
 
-    @Enumerated(EnumType.STRING)
-    private StatusAdocao status;
+	@Enumerated(EnumType.STRING)
+	private StatusAdocao status;
 
-    private String justificativaStatus;
+	private String justificativaStatus;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Adocao adocao = (Adocao) o;
-        return Objects.equals(id, adocao.id);
-    }
+	public Adocao() {
+	}
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
+	public Adocao(Tutor tutor, Pet pet, String motivo) {
+		this.tutor = tutor;
+		this.pet = pet;
+		this.motivo = motivo;
+		this.status = StatusAdocao.AGUARDANDO_AVALIACAO;
+		this.data = LocalDateTime.now();
+	}
 
-    public Long getId() {
-        return id;
-    }
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+		Adocao adocao = (Adocao) o;
+		return Objects.equals(id, adocao.id);
+	}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
+	}
 
-    public LocalDateTime getData() {
-        return data;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public void setData(LocalDateTime data) {
-        this.data = data;
-    }
+	public LocalDateTime getData() {
+		return data;
+	}
 
-    public Tutor getTutor() {
-        return tutor;
-    }
+	public Tutor getTutor() {
+		return tutor;
+	}
 
-    public void setTutor(Tutor tutor) {
-        this.tutor = tutor;
-    }
+	public Pet getPet() {
+		return pet;
+	}
 
-    public Pet getPet() {
-        return pet;
-    }
+	public String getMotivo() {
+		return motivo;
+	}
 
-    public void setPet(Pet pet) {
-        this.pet = pet;
-    }
+	public StatusAdocao getStatus() {
+		return status;
+	}
 
-    public String getMotivo() {
-        return motivo;
-    }
+	public String getJustificativaStatus() {
+		return justificativaStatus;
+	}
 
-    public void setMotivo(String motivo) {
-        this.motivo = motivo;
-    }
+	public void aprovaAdocao() {
+		this.status = StatusAdocao.APROVADO;
+	}
 
-    public StatusAdocao getStatus() {
-        return status;
-    }
-
-    public void setStatus(StatusAdocao status) {
-        this.status = status;
-    }
-
-    public String getJustificativaStatus() {
-        return justificativaStatus;
-    }
-
-    public void setJustificativaStatus(String justificativaStatus) {
-        this.justificativaStatus = justificativaStatus;
-    }
+	public void reprovaAdocao(String justificativa) {
+		this.status = StatusAdocao.REPROVADO;
+		this.justificativaStatus = justificativa;
+	}
 }
