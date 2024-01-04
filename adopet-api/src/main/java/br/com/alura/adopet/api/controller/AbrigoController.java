@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.alura.adopet.api.dto.AbrigoRespostaDto;
 import br.com.alura.adopet.api.dto.CadastroAbrigoDto;
 import br.com.alura.adopet.api.dto.CadastroPetDto;
+import br.com.alura.adopet.api.dto.PetRespostaDto;
 import br.com.alura.adopet.api.exception.ValidacaoException;
-import br.com.alura.adopet.api.model.Abrigo;
-import br.com.alura.adopet.api.model.Pet;
 import br.com.alura.adopet.api.service.AbrigoService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
@@ -29,8 +29,9 @@ public class AbrigoController {
 	private AbrigoService abrigoService;
 
 	@GetMapping
-	public ResponseEntity<List<Abrigo>> listar() {
-		List<Abrigo> abrigos = abrigoService.listar();
+	public ResponseEntity<List<AbrigoRespostaDto>> listar() {
+		List<AbrigoRespostaDto> abrigos = abrigoService.listar();
+
 		return ResponseEntity.ok(abrigos);
 	}
 
@@ -49,9 +50,9 @@ public class AbrigoController {
 	}
 
 	@GetMapping("/{idOuNome}/pets")
-	public ResponseEntity<List<Pet>> listarPets(@PathVariable String idOuNome) {
+	public ResponseEntity<List<PetRespostaDto>> listarPets(@PathVariable String idOuNome) {
 		try {
-			List<Pet> pets = abrigoService.listarPetsDoAbrigo(idOuNome);
+			List<PetRespostaDto> pets = abrigoService.listarPetsDoAbrigo(idOuNome);
 			return ResponseEntity.ok(pets);
 		} catch (EntityNotFoundException e) {
 			return ResponseEntity.notFound().build();
