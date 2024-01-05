@@ -1,5 +1,5 @@
-# adopet-api
-Curso de Boas práticas de programação: melhore o código de uma API Java
+# Boas Práticas em Java
+Aprenda como aplicar boas práticas como SOLID, refatoração testes e design patterns em Java
 
 ## 📋 Índice
 - [📖 Descrição](#-Descrição)
@@ -8,7 +8,7 @@ Curso de Boas práticas de programação: melhore o código de uma API Java
 - [🎓 Certificado](#-Certificado)
 
 ## 📖 Descrição
-Este repositório serve como um registro do código desenvolvido durante o *Curso de Boas práticas de programação: melhore o código de uma API Java* da formação [**Boas Práticas em Java**](https://cursos.alura.com.br/formacao-boas-praticas-java). Ao longo do curso, explorei diversos padrões de projeto e técnicas de refatoração, buscando aprimorar a qualidade e a legibilidade do código-fonte.
+Este repositório serve como um registro do código desenvolvido durante a formação da Alura: [**Boas Práticas em Java**](https://cursos.alura.com.br/formacao-boas-praticas-java). Ao longo da formação, explorei diversos padrões de projeto e técnicas de refatoração, buscando aprimorar a qualidade e a legibilidade do código-fonte.
 
 ## 🚀 Principais Tópicos Abordados
 - Refactoring com boas práticas de programação
