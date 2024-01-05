@@ -56,7 +56,10 @@ public class AdocaoService {
 	public void aprovar(AprovacaoAdocaoDto aprovacao) {
 		Adocao adocao = repository.getReferenceById(aprovacao.idAdocao());
 		adocao.aprovaAdocao();
-
+		
+		Pet pet = petRepository.getReferenceById(adocao.getPet().getId());
+		pet.adota();
+		
 		String subject = "Adoção aprovada";
 		String recipient = adocao.getPet().getAbrigo().getEmail();
 		String message = ("Parabéns " + adocao.getTutor().getNome() + "!\n\nSua adoção do pet "

@@ -60,6 +60,10 @@ public class Pet {
 		this.adotado = false;
 		this.abrigo = abrigo;
 	}
+	
+	public void adota() {
+		this.adotado = true;
+	}
 
 	@Override
 	public boolean equals(Object o) {
