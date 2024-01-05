@@ -1,7 +1,9 @@
 package br.com.alura.adopet.api.dto;
 
 import br.com.alura.adopet.api.model.TipoPet;
+import jakarta.validation.constraints.NotNull;
 
-public record CadastroPetDto(TipoPet tipo, String nome, String raca, Integer idade, String cor, Float peso) {
+public record CadastroPetDto(@NotNull TipoPet tipo, @NotNull String nome, @NotNull String raca, @NotNull Integer idade,
+		@NotNull String cor, @NotNull Float peso) {
 
 }
