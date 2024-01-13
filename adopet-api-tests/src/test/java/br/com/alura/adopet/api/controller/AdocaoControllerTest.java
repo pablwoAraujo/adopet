@@ -39,7 +39,7 @@ class AdocaoControllerTest {
 		// ARRANGE
 		SolicitacaoAdocaoDto dto = new SolicitacaoAdocaoDto(1l, 1l, "Motivo qualquer");
 
-		BDDMockito.doThrow(ValidacaoException.class).when(adocaoService).solicitar(any());
+		BDDMockito.doThrow(ValidacaoException.class).when(adocaoService).solicitar(dto);
 
 		// ACT
 		MockHttpServletResponse response = mvc.perform(MockMvcRequestBuilders.post("/adocoes")
@@ -95,7 +95,7 @@ class AdocaoControllerTest {
 		// ASSERT
 		Assertions.assertEquals(400, response.getStatus());
 	}
-	
+
 	@Test
 	void deveriaDevolverCodigo200ParaRequisicaoDeReprovarAdocao() throws Exception {
 		// ARRANGE
