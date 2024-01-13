@@ -1,15 +1,20 @@
 package br.com.alura.adopet.api.controller;
 
-import br.com.alura.adopet.api.dto.AprovacaoAdocaoDto;
-import br.com.alura.adopet.api.dto.ReprovacaoAdocaoDto;
-import br.com.alura.adopet.api.dto.SolicitacaoAdocaoDto;
-import br.com.alura.adopet.api.service.AdocaoService;
-import jakarta.validation.Valid;
-import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import br.com.alura.adopet.api.dto.AprovacaoAdocaoDto;
+import br.com.alura.adopet.api.dto.ReprovacaoAdocaoDto;
+import br.com.alura.adopet.api.dto.SolicitacaoAdocaoDto;
+import br.com.alura.adopet.api.exception.ValidacaoException;
+import br.com.alura.adopet.api.service.AdocaoService;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/adocoes")
@@ -24,7 +29,7 @@ public class AdocaoController {
         try {
             this.adocaoService.solicitar(dto);
             return ResponseEntity.ok("Adoção solciitada com sucesso!");
-        } catch (ValidationException e) {
+        } catch (ValidacaoException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
