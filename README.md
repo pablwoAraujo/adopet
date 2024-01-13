@@ -4,8 +4,8 @@ Aprenda como aplicar boas práticas como SOLID, refatoração testes e design pa
 ## 📋 Índice
 - [📖 Descrição](#-Descrição)
 - [🚀 Principais Tópicos Abordados](#-Principais-Tópicos-Abordados)
-- [📌 Créditos](#-Créditos)
-- [🎓 Certificado](#-Certificado)
+- [📌 Cursos](#-Cursos)
+- [🎓 Certificados](#-Certificados)
 
 ## 📖 Descrição
 Este repositório serve como um registro do código desenvolvido durante a formação da Alura: [**Boas Práticas em Java**](https://cursos.alura.com.br/formacao-boas-praticas-java). Ao longo da formação, explorei diversos padrões de projeto,  técnicas de refatoração e cenários de testes, buscando aprimorar a qualidade e a legibilidade do código-fonte.
